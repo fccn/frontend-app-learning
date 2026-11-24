@@ -27,6 +27,11 @@ const messages = defineMessages({
     defaultMessage: "You've successfully enrolled in this course!",
     description: 'A message telling the user that their course enrollment was successful.',
   },
+  error: {
+    id: 'learning.enrollment.error',
+    defaultMessage: 'We could not enroll you in this course. Please try again later or contact support.',
+    description: 'Message shown when the enrollment in a course fails and the server gives no reason for it.',
+  },
 });
 
 export default messages;

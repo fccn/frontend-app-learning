@@ -626,6 +626,44 @@ describe('Outline Tab', () => {
 
         window.location = location;
       });
+
+      it('shows the reason returned by the server when the enrollment is refused', async () => {
+        const { location } = window;
+        delete window.location;
+        window.location = {
+          reload: jest.fn(),
+        };
+        const reason = 'You must link your partner account before enrolling in this course.';
+        axiosMock.onPost(enrollmentUrl).reply(403, { message: reason, localizedMessage: reason });
+        await fetchAndRender();
+
+        const button = await screen.findByRole('button', { name: 'Enroll now' });
+        fireEvent.click(button);
+        expect(await screen.findByTestId('enrollment-error-message')).toHaveTextContent(reason);
+        expect(button).toBeEnabled();
+        expect(window.location.reload).not.toHaveBeenCalled();
+
+        window.location = location;
+      });
+
+      it('shows a generic message when the enrollment fails without a reason', async () => {
+        const { location } = window;
+        delete window.location;
+        window.location = {
+          reload: jest.fn(),
+        };
+        axiosMock.onPost(enrollmentUrl).reply(500, {});
+        await fetchAndRender();
+
+        const button = await screen.findByRole('button', { name: 'Enroll now' });
+        fireEvent.click(button);
+        expect(await screen.findByTestId('enrollment-error-message')).toHaveTextContent(
+          'We could not enroll you in this course. Please try again later or contact support.',
+        );
+        expect(window.location.reload).not.toHaveBeenCalled();
+
+        window.location = location;
+      });
     });
 
     describe('Access Expiration Alert', () => {
