@@ -24,14 +24,15 @@ const EnrollmentAlert = ({ payload }) => {
     org,
   } = useModel('courseHomeMeta', courseId);
 
-  const { enrollClickHandler, loading } = useEnrollClickHandler(
+  const { enrollClickHandler, loading, errorMessage } = useEnrollClickHandler(
     courseId,
     org,
     intl.formatMessage(messages.success),
+    intl.formatMessage(messages.error),
   );
 
   let text = intl.formatMessage(messages.alert);
-  let type = 'warning';
+  let type = errorMessage ? 'danger' : 'warning';
   let icon = WarningFilled;
   if (isStaff) {
     text = intl.formatMessage(messages.staffAlert);
@@ -54,6 +55,9 @@ const EnrollmentAlert = ({ payload }) => {
         {button}
         {loading && <FontAwesomeIcon icon={faSpinner} spin />}
       </div>
+      {errorMessage && (
+        <p className="mt-2 mb-0" data-testid="enrollment-error-message">{errorMessage}</p>
+      )}
     </Alert>
   );
 };

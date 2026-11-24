@@ -27,10 +27,11 @@ const PrivateCourseAlert = ({ payload }) => {
     title,
   } = useModel('courseHomeMeta', courseId);
 
-  const { enrollClickHandler, loading } = useEnrollClickHandler(
+  const { enrollClickHandler, loading, errorMessage } = useEnrollClickHandler(
     courseId,
     org,
     intl.formatMessage(enrollmentMessages.success),
+    intl.formatMessage(enrollmentMessages.error),
   );
 
   const enrollNowButton = (
@@ -91,6 +92,9 @@ const PrivateCourseAlert = ({ payload }) => {
               {intl.formatMessage(messages.toAccess)}
               {loading && <FontAwesomeIcon icon={faSpinner} spin />}
             </div>
+          )}
+          {canEnroll && errorMessage && (
+            <p className="mt-2 mb-0 text-danger" data-testid="enrollment-error-message">{errorMessage}</p>
           )}
           {!canEnroll && (
             <>
